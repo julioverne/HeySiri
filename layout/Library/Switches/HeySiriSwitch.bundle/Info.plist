@@ -1,0 +1,6 @@
+{
+	CFBundleDisplayName = "HeySiri";
+	CFBundleExecutable = "HeySiriSwitch";
+	CFBundleIdentifier = "com.julioverne.heysiri";
+	NSPrincipalClass = "HeySiriActivatorSwitch";
+}

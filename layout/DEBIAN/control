@@ -1,0 +1,12 @@
+Package: com.julioverne.heysiri
+Name: HeySiri
+Author: julioverne
+Version: 0.0~beta1
+Depends: mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm
+Description: Hey Siri While Not Charging
+Homepage: http://twitter.com/ijulioverne
+Maintainer: Julio
+Section: Tweaks
+Icon: file:///Library/PreferenceBundles/HeySiriSettings.bundle/icon@2x.png
+Depiction: http://julioverne.github.io/description.html?id=com.julioverne.heysiri

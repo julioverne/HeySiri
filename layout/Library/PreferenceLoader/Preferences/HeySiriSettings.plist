@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = HeySiriSettings;
+		cell = PSLinkCell;
+		detail = "HeySiriSettingsController";
+		icon = "icon.png";
+		isController = 1;
+		label = HeySiri;
+	};
+}
