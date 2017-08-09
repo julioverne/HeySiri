@@ -36,7 +36,7 @@ static BOOL Enabled;
 +(id)sharedInstance;
 -(int)batteryState;
 -(int)_checkBatteryState;
--(void)_didReceiveBatteryStatusChanged:(int)arg1 ;
+-(void)_didReceiveBatteryStatusChangedInQueue:(int)arg1 ;
 @end
 
 static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
@@ -50,7 +50,7 @@ static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observe
 		notify_post("com.julioverne.heysiri/SettingsChanged/Toogle");
 		if(strcmp(__progname, "mediaserverd") == 0) {
 			if(%c(VTBatteryMonitor)!=nil) {
-				[[%c(VTBatteryMonitor) sharedInstance] _didReceiveBatteryStatusChanged:[[%c(VTBatteryMonitor) sharedInstance] _checkBatteryState]];
+				[[%c(VTBatteryMonitor) sharedInstance] _didReceiveBatteryStatusChangedInQueue:1];
 			}
 		}
 	}
