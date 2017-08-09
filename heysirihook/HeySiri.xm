@@ -32,13 +32,6 @@ static BOOL Enabled;
 #import <libactivator/libactivator.h>
 #import <Flipswitch/Flipswitch.h>
 
-@interface VTBatteryMonitor : NSObject
-+(id)sharedInstance;
--(int)batteryState;
--(int)_checkBatteryState;
--(void)_didReceiveBatteryStatusChangedInQueue:(int)arg1 ;
-@end
-
 static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo)
 {
 	@autoreleasepool {
@@ -49,26 +42,35 @@ static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observe
 		}
 		notify_post("com.julioverne.heysiri/SettingsChanged/Toogle");
 		if(strcmp(__progname, "mediaserverd") == 0) {
-			if(%c(VTBatteryMonitor)!=nil) {
-				[[%c(VTBatteryMonitor) sharedInstance] _didReceiveBatteryStatusChangedInQueue:1];
+			if(name) {
+				exit(0);
 			}
 		}
 	}
 }
 
+
 @interface HeySiriActivatorSwitch : NSObject <FSSwitchDataSource>
 + (id)sharedInstance;
++ (BOOL)sharedInstanceExist;
 - (void)RegisterActions;
 @end
 
 @implementation HeySiriActivatorSwitch
+__strong static id _sharedObject;
 + (id)sharedInstance
 {
-    __strong static id _sharedObject;
 	if (!_sharedObject) {
 		_sharedObject = [[self alloc] init];
 	}
 	return _sharedObject;
+}
++ (BOOL)sharedInstanceExist
+{
+	if (_sharedObject) {
+		return YES;
+	}
+	return NO;
 }
 - (void)RegisterActions
 {
