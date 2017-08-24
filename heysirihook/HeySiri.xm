@@ -8,18 +8,12 @@ extern const char *__progname;
 
 #define PLIST_PATH_Settings "/var/mobile/Library/Preferences/com.julioverne.heysiri.plist"
 
+
 static BOOL Enabled;
 
 %group mediaserverdHooks
 %hook VTBatteryMonitor
 -(int)batteryState
-{
-	if(Enabled) {
-		return 1;
-	}
-	return %orig;
-}
--(int)_checkBatteryState
 {
 	if(Enabled) {
 		return 1;
@@ -37,15 +31,13 @@ static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observe
 	@autoreleasepool {
 		NSDictionary *Prefs = [[[NSDictionary alloc] initWithContentsOfFile:@PLIST_PATH_Settings]?:@{} copy];
 		Enabled = (BOOL)[Prefs[@"Enabled"]?:@YES boolValue];
-		if(%c(FSSwitchPanel) != nil) {
+		if(!strcmp(__progname, "SpringBoard")) {
 			[[%c(FSSwitchPanel) sharedPanel] stateDidChangeForSwitchIdentifier:@"com.julioverne.heysiri"];
 		}
 		notify_post("com.julioverne.heysiri/SettingsChanged/Toogle");
-		if(strcmp(__progname, "mediaserverd") == 0) {
-			if(name) {
-				exit(0);
-			}
-		}
+		notify_post("kAFPreferencesDidChangeDarwinNotification");
+		notify_post("AFInternalPreferencesDidChangeDarwinNotification");
+		notify_post("kVTPreferencesVoiceTriggerEnabledDidChangeDarwinNotification");
 	}
 }
 
@@ -129,13 +121,12 @@ __strong static id _sharedObject;
 @end
 
 
-
 %ctor
 {
 	@autoreleasepool {
 		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, settingsChangedHeySiri, CFSTR("com.julioverne.heysiri/SettingsChanged"), NULL, CFNotificationSuspensionBehaviorCoalesce);
 		settingsChangedHeySiri(NULL, NULL, NULL, NULL, NULL);
-		if(strcmp(__progname, "mediaserverd") == 0) {
+		if(!strcmp(__progname, "mediaserverd")) {
 			dlopen("/System/Library/PrivateFrameworks/VoiceTrigger.framework/VoiceTrigger", RTLD_LAZY);
 			%init(mediaserverdHooks);
 		} else {
