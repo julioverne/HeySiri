@@ -31,7 +31,7 @@ static void settingsChangedHeySiri(CFNotificationCenterRef center, void *observe
 	@autoreleasepool {
 		NSDictionary *Prefs = [[[NSDictionary alloc] initWithContentsOfFile:@PLIST_PATH_Settings]?:@{} copy];
 		Enabled = (BOOL)[Prefs[@"Enabled"]?:@YES boolValue];
-		if(!strcmp(__progname, "SpringBoard")) {
+		if(!strcmp(__progname, "SpringBoard") && name) {
 			[[%c(FSSwitchPanel) sharedPanel] stateDidChangeForSwitchIdentifier:@"com.julioverne.heysiri"];
 		}
 		notify_post("com.julioverne.heysiri/SettingsChanged/Toogle");
